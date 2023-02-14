@@ -23,6 +23,7 @@
           :author="article.author"
           :created_at="new Date(article.created_at)"
           :updated_at="new Date(article.updated_at)"
+          :is-details="false"
           @onEditClick="handleOnEditClick"
           @onRemoveClick="handleOnRemoveClick"
         >
@@ -33,7 +34,8 @@
       v-if="this.showAddModal"
       @onModalClose="closeAddModal"
       @afterAdd="handleAfterAdd"
-    ></NewArticleModal>
+    >
+    </NewArticleModal>
     <EditArticleModal
       v-if="this.showEditModal"
       :id="this.articlesId"
@@ -41,15 +43,7 @@
       @afterEdit="handleAfterEdit"
     ></EditArticleModal>
     <!-- searchbar -->
-    <div
-      v-if="
-        this.showEditModal == false &&
-          this.showAddModal == false &&
-          this.showConfirmationAlert == false &&
-          this.showInfo == false
-      "
-      class="is-flex is-justify-content-center mt-4"
-    >
+    <div class="is-flex is-justify-content-center">
       <div class="control has-icons-left">
         <input
           class="input"
@@ -63,11 +57,6 @@
       </div>
     </div>
     <Pagination
-      v-if="
-        this.showEditModal == false &&
-          this.showAddModal == false &&
-          this.showConfirmationAlert == false
-      "
       @onPageChange="handlePageChange"
       :total-pages="this.totalPages"
     ></Pagination>
@@ -77,27 +66,11 @@
       :message="this.message"
       @onCloseAlert="handleOnCloseAlert"
     ></InformationMessage>
-    <div v-if="this.showConfirmationAlert" class="modal-background">
-      <div class="action-confirmation is-flex is-justify-content-center mt-4">
-        <div class="notification is-danger is-light">
-          <p>Are you sure you want to <strong>remove</strong> this article?</p>
-          <div class="buttons is-flex is-justify-content-center">
-            <button
-              class="button is-success is-small is-uppercase mt-2"
-              @click="removeArticle(articlesId)"
-            >
-              Yes
-            </button>
-            <button
-              class="button is-danger is-small is-uppercase mt-2"
-              @click="closeConfirmationWindow"
-            >
-              No
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Confirmation
+      v-if="this.showConfirmationAlert"
+      @onYesClick="removeArticle(articlesId)"
+      @onCloseWindowClick="closeConfirmationWindow"
+    ></Confirmation>
   </div>
 </template>
 
@@ -107,6 +80,7 @@ import Pagination from "../components/Pagination.vue";
 import NewArticleModal from "../components/NewArticleModal.vue";
 import EditArticleModal from "../components/EditArticleModal.vue";
 import InformationMessage from "../components/InformationMessage.vue";
+import Confirmation from "../components/Confirmation.vue";
 import { modalsMixin } from "../mixins/modalsMixin.js";
 import { debounce } from "vue-debounce";
 
@@ -118,7 +92,8 @@ export default {
     Pagination,
     NewArticleModal,
     EditArticleModal,
-    InformationMessage
+    InformationMessage,
+    Confirmation
   },
 
   data() {

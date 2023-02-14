@@ -1,6 +1,6 @@
 <template>
   <div class="new-article-modal">
-    <div class="modal-background">
+    <div class="modal-background" style="z-index: 999">
       <div class="modal-content mt-4">
         <div class="box">
           <div class="field">

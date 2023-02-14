@@ -9,6 +9,7 @@
             <p>{{ convertedDate }}</p>
           </div>
           <button
+            v-if="!isDetails"
             class="button is-info is-small is-uppercase mr-2"
             @click="openArticleDetails"
           >
@@ -41,13 +42,14 @@ export default {
     body: String,
     author: Number,
     created_at: Date,
-    updated_at: Date
+    updated_at: Date,
+    isDetails: Boolean
   },
 
   data() {
     return {
       authorsList: [],
-      authorsName: String
+      authorsName: ""
     };
   },
 

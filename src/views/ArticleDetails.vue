@@ -1,29 +1,16 @@
 <template>
   <div class="article-details">
-    <div class="tile is-ancestor">
-      <div class="tile is-parent m-6">
-        <article class="tile is-child box">
-          <p class="title">{{ title }}</p>
-          <p class="subtitle">{{ this.authorsName }}</p>
-          <div class="content">
-            <p>{{ body }}</p>
-          </div>
-          <footer>{{ convertedDate }}</footer>
-          <button
-            class="button is-warning is-small is-uppercase mr-2 mt-2"
-            @click="openEditModal"
-          >
-            Edit
-          </button>
-          <button
-            class="button is-danger is-small is-uppercase mt-2"
-            @click="handleOnRemoveClick"
-          >
-            Remove
-          </button>
-        </article>
-      </div>
-    </div>
+    <Article
+      :id="Number(this.id)"
+      :title="this.title"
+      :body="this.body"
+      :author="this.authorsId"
+      :created_at="new Date(this.createdDate)"
+      :updated_at="new Date(this.updatedDate)"
+      :is-details="true"
+      @onEditClick="openEditModal"
+      @onRemoveClick="handleOnRemoveClick"
+    ></Article>
     <InformationMessage
       v-if="this.showInfo"
       :information-type="this.infoType"
@@ -36,41 +23,29 @@
       @onModalClose="closeEditModal"
       @afterEdit="handleAfterEdit"
     ></EditArticleModal>
-    <div v-if="this.showConfirmationAlert" class="modal-background">
-      <div class="action-confirmation is-flex is-justify-content-center mt-4">
-        <div class="notification is-danger is-light">
-          <p>Are you sure you want to <strong>remove</strong> this article?</p>
-          <div class="buttons is-flex is-justify-content-center">
-            <button
-              class="button is-success is-small is-uppercase mt-2"
-              @click="removeArticle(id)"
-            >
-              Yes
-            </button>
-            <button
-              class="button is-danger is-small is-uppercase mt-2"
-              @click="closeConfirmationWindow"
-            >
-              No
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Confirmation
+      v-if="this.showConfirmationAlert"
+      @onYesClick="removeArticle(id)"
+      @onCloseWindowClick="closeConfirmationWindow"
+    ></Confirmation>
   </div>
 </template>
 
 <script>
+import Article from "../components/Article.vue";
 import EditArticleModal from "../components/EditArticleModal.vue";
 import InformationMessage from "../components/InformationMessage.vue";
+import Confirmation from "../components/Confirmation.vue";
 import { modalsMixin } from "../mixins/modalsMixin.js";
 
 export default {
   name: "ArticleDetails",
   mixins: [modalsMixin],
   components: {
+    Article,
     EditArticleModal,
-    InformationMessage
+    InformationMessage,
+    Confirmation
   },
 
   data() {
@@ -78,25 +53,10 @@ export default {
       id: this.$route.params.id,
       title: "",
       body: "",
-      authorsId: Number,
-      authorsName: String,
-      createdDate: Date,
-      updatedDate: Date,
-      authorsList: []
+      authorsId: 0,
+      createdDate: null,
+      updatedDate: null
     };
-  },
-
-  computed: {
-    convertedDate() {
-      let created = new Date(this.createdDate);
-      let updated = new Date(this.updatedDate);
-
-      if (created.getTime() > updated.getTime()) {
-        return created.toLocaleString("lt-LT");
-      } else {
-        return updated.toLocaleString("lt-LT");
-      }
-    }
   },
 
   methods: {
@@ -107,17 +67,6 @@ export default {
       this.authorsId = articleData.author;
       this.createdDate = articleData.created_at;
       this.updatedDate = articleData.updated_at;
-      this.getAuthorsList();
-    },
-
-    async getAuthorsList() {
-      this.authorsList = await this.$requests.getAuthors();
-
-      for (let i = 0; i < this.authorsList.length; i++) {
-        if (this.authorsList[i].id == this.authorsId) {
-          this.authorsName = this.authorsList[i].name;
-        }
-      }
     },
 
     handleOnRemoveClick() {
