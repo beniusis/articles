@@ -22,14 +22,8 @@ const routes = [
     component: ArticleDetails,
     beforeEnter: async (to, from, next) => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/articles/${to.params.id}`
-        );
-        if (response.status == 200) {
-          next();
-        } else {
-          next({ name: "pagenotfound" });
-        }
+        await axios.get(`http://localhost:3000/articles/${to.params.id}`);
+        next();
       } catch (error) {
         next({ name: "pagenotfound" });
       }
