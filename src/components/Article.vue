@@ -8,9 +8,24 @@
           <div class="content">
             <p>{{ convertedDate }}</p>
           </div>
-          <button class="button is-info is-small is-uppercase mr-2" @click="openArticleDetails">Details</button>
-          <button class="button is-warning is-small is-uppercase mr-2" @click="$emit('onEditClick', id)">Edit</button>
-          <button class="button is-danger is-small is-uppercase" @click="$emit('onRemoveClick', id)">Remove</button>
+          <button
+            class="button is-info is-small is-uppercase mr-2"
+            @click="openArticleDetails"
+          >
+            Details
+          </button>
+          <button
+            class="button is-warning is-small is-uppercase mr-2"
+            @click="$emit('onEditClick', id)"
+          >
+            Edit
+          </button>
+          <button
+            class="button is-danger is-small is-uppercase"
+            @click="$emit('onRemoveClick', id)"
+          >
+            Remove
+          </button>
         </article>
       </div>
     </div>
@@ -33,7 +48,7 @@ export default {
     return {
       authorsList: [],
       authorsName: String
-    }
+    };
   },
 
   computed: {
@@ -51,8 +66,7 @@ export default {
 
   methods: {
     async getAuthorsList() {
-      const response = await this.$http.get("http://localhost:3000/authors");
-      this.authorsList = response.data;
+      this.authorsList = await this.$requests.getAuthors();
 
       for (let i = 0; i < this.authorsList.length; i++) {
         if (this.authorsList[i].id == this.author) {
@@ -61,20 +75,18 @@ export default {
       }
     },
 
-    async removeArticle() {
-      await this.$http.delete("http://localhost:3000/articles/" + this.id);
-      this.$router.go();
-    },
-
     openArticleDetails() {
-      this.$router.push({ name: "article" , params: {
-        id: this.id
-      }});
+      this.$router.push({
+        name: "article",
+        params: {
+          id: this.id
+        }
+      });
     }
   },
 
   created() {
     this.getAuthorsList();
   }
-}
+};
 </script>

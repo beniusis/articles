@@ -3,8 +3,9 @@ import VueRouter from "vue-router";
 
 import Articles from "../views/Articles.vue";
 import ArticleDetails from "../views/ArticleDetails.vue";
-import PageNotFound from "../components/PageNotFound.vue";
-import NoArticleFound from "../components/NoArticleFound.vue";
+import PageNotFound from "../views/PageNotFound.vue";
+import "babel-polyfill";
+import axios from "axios";
 
 Vue.use(VueRouter);
 
@@ -15,24 +16,29 @@ const routes = [
     component: Articles
   },
   {
-    path: "/404",
-    name: "404",
-    component: PageNotFound
-  },
-  {
-    path: "",
-    name: "doesNotExist",
-    component: NoArticleFound
-  },
-  {
     path: "/articles/:id",
     name: "article",
     props: true,
-    component: ArticleDetails
+    component: ArticleDetails,
+    beforeEnter: async (to, from, next) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/articles/${to.params.id}`
+        );
+        if (response.status == 200) {
+          next();
+        } else {
+          next({ name: "pagenotfound" });
+        }
+      } catch (error) {
+        next({ name: "pagenotfound" });
+      }
+    }
   },
   {
     path: "*",
-    redirect: "/404"
+    name: "pagenotfound",
+    component: PageNotFound
   }
 ];
 

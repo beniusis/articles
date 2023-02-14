@@ -1,12 +1,13 @@
 export const messageMixin = {
     props: {
-        informationType: String,
-        message: String
+      informationType: String,
+      message: String
     },
-
+  
     methods: {
-        closeAlert() {
-            this.$emit('onCloseAlert');
-        }
+      closeAlert() {
+        this.$emit("onCloseAlert");
+      }
     }
-}
+  };
+  

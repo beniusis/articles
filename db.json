@@ -54,7 +54,7 @@
       "body": "Cover yourself",
       "author": 2,
       "created_at": "2023-02-05 18:39:09",
-      "updated_at": null
+      "updated_at": "2023-02-13 14:56:36"
     },
     {
       "id": 5,
@@ -81,12 +81,12 @@
       "updated_at": null
     },
     {
-      "id": 8,
-      "title": "ayooo",
-      "body": "test",
-      "author": 5,
-      "created_at": "2023-02-08 15:25:18",
-      "updated_at": null
+      "title": "TESTAS",
+      "body": "NEWTEST",
+      "author": 1,
+      "created_at": "2023-02-14 08:09:12",
+      "updated_at": "2023-02-14 08:24:37",
+      "id": 8
     }
   ]
 }
